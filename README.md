@@ -1,12 +1,12 @@
 # FinSight – FinTech Data Engineering & Analytics Portfolio
 
 ## Problem Statement & Business Context
-Financial institutions need robust data pipelines to ingest transaction streams, ensure data quality, and provide analytical insights for fraud detection, credit risk assessment, and customer behavior. This project showcases a complete end‑to‑end data‑engineering workflow built with Python, PostgreSQL, and Power BI, exactly as described on the resume.
+Financial institutions need robust data pipelines to ingest transaction streams, ensure data quality, and provide analytical insights for fraud detection, credit‑risk assessment, and customer behavior. This project demonstrates an end‑to‑end data‑engineering workflow built with Python, PostgreSQL, and Power BI, exactly as described on the resume.
 
 ## Datasets
 | Dataset | Description | Source URL | Used For |
 |---|---|---|---|
-| **PaySim** | Synthetic mobile money transaction data (including fraud label) | https://raw.githubusercontent.com/ntumg/paysim/master/paysim.csv | Transaction, fraud‑risk analysis |
+| **PaySim** | Synthetic mobile‑money transaction data (includes fraud label) | https://raw.githubusercontent.com/ntumg/paysim/master/paysim.csv | Transaction, fraud‑risk analysis |
 | **UCI Credit Card Default** | Credit‑card client data with default flag | https://archive.ics.uci.edu/ml/machine-learning-databases/00350/default%20of%20credit%20card%20clients.xls | Credit‑risk analysis |
 
 Both files are automatically downloaded by the ingestion script into `data/raw/`.
@@ -23,6 +23,7 @@ graph TD
     G --> H[Analytical Marts (SQL Views)]
     H --> I[Power BI Dashboard]
 ```
+
 1. **Ingestion** – Reads CSVs, validates schema, writes raw rows to staging tables `stg_paysim_raw` and `stg_credit_raw`.
 2. **Validation** – Executes data‑quality rules (missing values, duplicates, invalid amounts, etc.) and stores a log in `validation_log`.
 3. **Transformation** – Cleans data, derives date keys, normalises categorical fields, and writes to `transformed_*` tables.
@@ -69,7 +70,7 @@ FinSight/
    ```bash
    docker-compose up -d
    ```
-   The container runs PostgreSQL 15 with default credentials (`postgres/postgres`).
+   The container runs PostgreSQL 15 with default credentials (`postgres/postgres`).
 4. **Run the ingestion pipeline** – it will download the datasets and load them into the staging tables:
    ```bash
    python -m src.ingestion
@@ -125,6 +126,3 @@ All core validation, transformation, and ingestion utilities are covered.
 * Fraud‑risk analysis is descriptive only – no predictive modeling is performed.
 * The Power BI file is a static template; users can further customise visuals.
 * Docker is used only for PostgreSQL (and optional pgAdmin).
-
----
-*Generated on 2026‑09‑12.*
