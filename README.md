@@ -120,9 +120,4 @@ All core validation, transformation, and ingestion utilities are covered.
 | Customer analysis | Analytical view | `sql/marts/customer_analysis.sql` |
 | Power BI | Dashboard file | `dashboards/FinSight.pbix` |
 
-## Limitations & Assumptions
-* Datasets are synthetic/public; they do not contain real HSBC customer data.
-* The pipeline runs in batch mode, not real‑time streaming.
-* Fraud‑risk analysis is descriptive only – no predictive modeling is performed.
-* The Power BI file is a static template; users can further customise visuals.
-* Docker is used only for PostgreSQL (and optional pgAdmin).
+
