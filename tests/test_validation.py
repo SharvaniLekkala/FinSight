@@ -27,7 +27,7 @@ def test_missing_values(paysim_df):
 
 def test_duplicates(paysim_df):
     # Duplicate a row deliberately
-    df_dup = paysim_df.append(paysim_df.iloc[0], ignore_index=True)
+    df_dup = pd.concat([paysim_df, paysim_df.iloc[[0]]], ignore_index=True)
     result = check_duplicates(df_dup, ["step", "type", "amount", "nameOrig", "nameDest"])
     assert not result.passed
     # Two rows are duplicates (original and appended)

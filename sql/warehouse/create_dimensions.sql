@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS dim_date (
 -- Transaction type dimension (type codes from PaySim)
 CREATE TABLE IF NOT EXISTS dim_transaction_type (
     type_key SERIAL PRIMARY KEY,
-    transaction_type INT UNIQUE,
+    transaction_type TEXT UNIQUE,
     description TEXT
 );
 

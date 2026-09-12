@@ -22,13 +22,17 @@ def main():
     # Process PaySim
     paysim_df = pd.read_sql_table("stg_paysim_raw", con=engine)
     paysim_clean = clean_paysim(paysim_df)
-    paysim_clean.to_sql("transformed_paysim", con=engine, if_exists="replace", index=False, method="multi")
+    with engine.begin() as conn:
+        conn.exec_driver_sql("DROP TABLE IF EXISTS transformed_paysim CASCADE;")
+    paysim_clean.to_sql("transformed_paysim", con=engine, if_exists="replace", index=False, method="multi", chunksize=500)
     logger.info("Transformed PaySim: %d rows", len(paysim_clean))
 
     # Process Credit
     credit_df = pd.read_sql_table("stg_credit_raw", con=engine)
     credit_clean = clean_credit(credit_df)
-    credit_clean.to_sql("transformed_credit", con=engine, if_exists="replace", index=False, method="multi")
+    with engine.begin() as conn:
+        conn.exec_driver_sql("DROP TABLE IF EXISTS transformed_credit CASCADE;")
+    credit_clean.to_sql("transformed_credit", con=engine, if_exists="replace", index=False, method="multi", chunksize=500)
     logger.info("Transformed Credit: %d rows", len(credit_clean))
 
 if __name__ == "__main__":

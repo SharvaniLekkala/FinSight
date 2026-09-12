@@ -18,7 +18,7 @@ def main():
     datasets = [
         {
             "name": "paysim",
-            "url": "https://raw.githubusercontent.com/ntumg/paysim/master/paysim.csv",
+            "url": "https://raw.githubusercontent.com/ntumg/paysim/master/data/paysim.csv",
             "staging_table": "stg_paysim_raw",
         },
         {

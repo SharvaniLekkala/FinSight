@@ -12,10 +12,6 @@ CREATE TABLE IF NOT EXISTS fact_transactions (
     balance_after NUMERIC,
     is_fraud BOOLEAN,
     is_flagged_fraud BOOLEAN,
-    hour_of_day INT,
-    -- additional columns can be added as needed
-    CONSTRAINT fk_customer FOREIGN KEY (customer_key) REFERENCES dim_customer(customer_key),
-    CONSTRAINT fk_account FOREIGN KEY (account_key) REFERENCES dim_account(account_key),
-    CONSTRAINT fk_date FOREIGN KEY (date_key) REFERENCES dim_date(date_key),
-    CONSTRAINT fk_type FOREIGN KEY (transaction_type_key) REFERENCES dim_transaction_type(type_key)
+    hour_of_day INT
 );
+

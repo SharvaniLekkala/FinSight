@@ -2,7 +2,7 @@ import logging
 from pathlib import Path
 
 import pandas as pd
-from sqlalchemy import create_engine
+from sqlalchemy import text
 
 from src.validation.rules import (
     check_missing_values,
@@ -10,10 +10,11 @@ from src.validation.rules import (
     check_invalid_transactions,
     check_null_identifiers,
 )
+from src.ingestion.loader import load_db_engine
 
 logger = logging.getLogger(__name__)
 
-def run_validation(table_name: str, engine, config):
+def run_validation(table_name: str, engine, config=None):
     """Load a staging table into a DataFrame and run all validation rules.
     Results are written to a validation_log table.
     """
@@ -43,24 +44,29 @@ def run_validation(table_name: str, engine, config):
         run_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
     """
-    engine.execute(create_sql)
-    insert_sql = """
+    insert_sql = text("""
     INSERT INTO validation_log (table_name, rule_name, passed, issue_count)
-    VALUES (%s, %s, %s, %s);
-    """
-    for r in results:
-        engine.execute(insert_sql, (table_name, r.rule_name, r.passed, r.issue_count))
-        logger.info("Rule %s passed=%s issues=%d", r.rule_name, r.passed, r.issue_count)
+    VALUES (:table_name, :rule_name, :passed, :issue_count);
+    """)
+    with engine.begin() as conn:
+        conn.exec_driver_sql(create_sql)
+        for r in results:
+            conn.execute(insert_sql, {
+                "table_name": table_name,
+                "rule_name": r.rule_name,
+                "passed": r.passed,
+                "issue_count": r.issue_count,
+            })
+            logger.info("Rule %s passed=%s issues=%d", r.rule_name, r.passed, r.issue_count)
 
 if __name__ == "__main__":
     # Simple CLI for manual runs
     import argparse
+    logging.basicConfig(level=logging.INFO)
     parser = argparse.ArgumentParser(description="Run validation on staging tables")
     parser.add_argument("--config", default="config/db.yaml")
     args = parser.parse_args()
-    engine = create_engine(
-        f"postgresql+psycopg2://{args.config}"  # placeholder, adjust in real use
-    )
+    engine = load_db_engine(args.config)
     # For demo purpose, run on both tables
     for tbl in ["stg_paysim_raw", "stg_credit_raw"]:
         run_validation(tbl, engine, None)

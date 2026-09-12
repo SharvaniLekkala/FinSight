@@ -22,11 +22,16 @@ def clean_credit(df: pd.DataFrame) -> pd.DataFrame:
     # Age group
     bins = [0, 30, 45, 60, 120]
     labels = ["<30", "30-45", "45-60", ">60"]
-    df["age_group"] = pd.cut(df["AGE"], bins=bins, labels=labels, right=False)
+    df["age_group"] = pd.cut(df["AGE"], bins=bins, labels=labels, right=False).astype(str)
     # Ensure numeric types for financial columns
     numeric_cols = [col for col in df.columns if "PAY_" in col or "BILL_AMT" in col or "PAY_AMT" in col]
     for col in numeric_cols:
         df[col] = pd.to_numeric(df[col], errors="coerce")
-    # Rename ID column for consistency
-    df = df.rename(columns={"ID": "customer_id"})
+    # Rename ID and AGE columns for consistency
+    df = df.rename(columns={"ID": "customer_id", "AGE": "age"})
+    df["customer_id"] = df["customer_id"].astype(str)
+    df["age"] = pd.to_numeric(df["age"], errors="coerce")
+    for col in ["default payment next month", "default.payment.next.month"]:
+        if col in df.columns:
+            df["is_default"] = pd.to_numeric(df[col], errors="coerce").fillna(0).astype(int)
     return df
